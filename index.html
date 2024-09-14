@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>TheBot</title>
+    <!-- <link rel="icon" type="image/x-icon" href="/images/favicon.ico"> -->
+    <link rel="icon" type="images/x-icon"
+        href="https://img.freepik.com/free-vector/robotic-artificial-intelligence-technology-smart-lerning-from-bigdata_1150-48136.jpg">
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar sticky-top navbar-light bg-dark text-light mb-4">
+        <div class="container-fluid">
+            <h4 id="headTitle" class="text-center">
+                <i style="color:rgba(255, 165, 0, 0.85);;font-size: 1.5rem !important;">
+                    MistralMind
+                </i>
+            </h4>
+            <span title="About Me" onclick="openModal('openModalBtn')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor"
+                    class="bi bi-lightbulb svg-Me" viewBox="0 0 16 16" title="About">
+                    <path
+                        d="M2 6a6 6 0 1 1 10.174 4.31c-.203.196-.359.4-.453.619l-.762 1.769A.5.5 0 0 1 10.5 13a.5.5 0 0 1 0 1 .5.5 0 0 1 0 1l-.224.447a1 1 0 0 1-.894.553H6.618a1 1 0 0 1-.894-.553L5.5 15a.5.5 0 0 1 0-1 .5.5 0 0 1 0-1 .5.5 0 0 1-.46-.302l-.761-1.77a2 2 0 0 0-.453-.618A5.98 5.98 0 0 1 2 6m6-5a5 5 0 0 0-3.479 8.592c.263.254.514.564.676.941L5.83 12h4.342l.632-1.467c.162-.377.413-.687.676-.941A5 5 0 0 0 8 1" />
+                </svg>
+            </span>
+
+        </div>
+    </nav>
+    <!-- Modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+        id="openModalBtn" hidden>
+        Launch demo modal
+    </button>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">About Me</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="container text-center">
+                        <img src="static/images/owner.jpg" id="ownerImage" alt="owner">
+                        <h3>Adarsh Mishra</h3>
+                        <button class="btn btn-primary mt-2 mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-google" viewBox="0 0 16 16">
+                                <path
+                                    d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z">
+                                </path>
+                            </svg>
+                            <span class="mx-2">adarshmishra812003@gmail.com</span>
+                        </button>
+                        <button class="btn btn-primary mx-3 mt-2 mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-linkedin" viewBox="0 0 16 16">
+                                <path
+                                    d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z">
+                                </path>
+                            </svg><span class="mx-2">adarsh-mishra-469811205</span>
+                        </button>
+                        <hr>
+                        <p class="text-start">My name is Adarsh Siddharth Shankar Mishra from Thane .I have completed Bsc.IT from
+                            University of MUMBAI in 2023.Currenctly working as <strong>Associate Software
+                                Engineer</strong> at <strong>Netcorecloud.</strong>This website help you to increase
+                            your knowledge you can also intigrate this with your own api.Please check the github for
+                            source code.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal end -->
+    <div id="chat-container" class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-12">
+                <p id="watermark"><i><span class="text-danger">Note : </span> Some time it can give wrong
+                        response.</i></p>
+                <div id="chat">
+                    <div class='text-center' id='welcomeDiv'>
+                        <div class="row">
+                            <div class="col-md-4 mt-4" onclick="setRole(this)">
+                                <div class="card card-orange" title="Click here to set role">
+                                    <div class="card-header">
+                                        Readme Generator
+                                    </div>
+                                    <div class="card-body botRole">
+                                        <p class="card-text text-start">Act as readme genrator and help us to gerate
+                                            readme file</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-4" onclick="setRole(this)">
+                                <div class="card card-red" title="Click here to set role">
+                                    <div class="card-header">
+                                        Interviewer
+                                    </div>
+                                    <div class="card-body botRole">
+                                        <p class="card-text text-start">Act as Interviewer and ask question to fresher
+                                            for software engineer role</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mt-4" onclick="setRole(this)">
+                                <div class="card  card-blue" title="Click here to set role">
+                                    <div class="card-header">
+                                        Pokimon Expert
+                                    </div>
+                                    <div class="card-body botRole">
+                                        <p class="card-text text-start">Act as Pokimon Expert and give answer to user
+                                            question</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- sccond row -->
+                            <div class="col-md-4 mt-4" onclick="setRole(this)">
+                                <div class="card card-lightblue" title="Click here to set role">
+                                    <div class="card-header">
+                                        Sql Developer
+                                    </div>
+                                    <div class="card-body botRole">
+                                        <p class="card-text text-start">Act as sql developer give sql query to user
+                                            based on their question</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="robot-wrapper">
+                                    <img src='static/images/robotHii.gif' style='width:65%;cursor:pointer;'
+                                        title="You Found me ;)" onclick="openModal('openModalBtn')">
+                                </div>
+
+                                <span><br>
+                                    <strong>Hello,</strong>How
+                                    can i help you ?
+                                </span>
+                            </div>
+                            <div class="col-md-4 mt-4">
+                                <div class="card card-lightyellow">
+                                    <div class="card-header">
+                                        Coustom
+                                    </div>
+                                    <div class="card-body botRole">
+                                        <input class="card-text text-start form-control" id="coustomInput" placeholder="Enter your costome role">
+                                        <button class="btn btn-success mt-1" title="Click here to set role" onclick='setRole(event,true,"coustomInput")'>Set</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Query Buttons -->
+                <div class="buttonSec my-3">
+                    <div class="row">
+                        <div class="col-md-11">
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-robot" viewBox="0 0 16 16">
+                                        <path
+                                            d="M6 12.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5M3 8.062C3 6.76 4.235 5.765 5.53 5.886a26.6 26.6 0 0 0 4.94 0C11.765 5.765 13 6.76 13 8.062v1.157a.93.93 0 0 1-.765.935c-.845.147-2.34.346-4.235.346s-3.39-.2-4.235-.346A.93.93 0 0 1 3 9.219zm4.542-.827a.25.25 0 0 0-.217.068l-.92.9a25 25 0 0 1-1.871-.183.25.25 0 0 0-.068.495c.55.076 1.232.149 2.02.193a.25.25 0 0 0 .189-.071l.754-.736.847 1.71a.25.25 0 0 0 .404.062l.932-.97a25 25 0 0 0 1.922-.188.25.25 0 0 0-.068-.495c-.538.074-1.207.145-1.98.189a.25.25 0 0 0-.166.076l-.754.785-.842-1.7a.25.25 0 0 0-.182-.135">
+                                        </path>
+                                        <path
+                                            d="M8.5 1.866a1 1 0 1 0-1 0V3h-2A4.5 4.5 0 0 0 1 7.5V8a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1v-.5A4.5 4.5 0 0 0 10.5 3h-2zM14 7.5V13a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7.5A3.5 3.5 0 0 1 5.5 4h5A3.5 3.5 0 0 1 14 7.5">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <input type="text" id="userInput" onkeydown="callByEnter(event,'getQAnswer')"
+                                    class="form-control" placeholder="Type your question..."
+                                    aria-label="Input group example" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button id="send-button" class="btn btn-primary w-100" onclick="getQAnswer()">Ask</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="static/js/common.js"></script>
+    <script src="static/js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
+<script>
+    localStorage.setItem("botDesc", null)
+</script>
