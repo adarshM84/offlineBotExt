@@ -183,6 +183,28 @@ body {
     }
 }
 
+@keyframes rotateIcon {
+    10% {
+        rotate:30deg;
+    }
+
+    25% {
+        rotate:40deg;
+    }
+
+    50% {
+        rotate:60deg;
+    }
+
+    75% {
+        rotate:40deg;
+    }
+
+    100% {
+        rotate:30deg;
+    }
+}
+
 #watermark {
     position: fixed;
     bottom: -10px;
@@ -241,4 +263,7 @@ body {
     /* Hide any overflow */
     box-sizing: border-box;
     /* Ensure padding and border do not affect size */
+}
+.bi-gear-wide-connected{
+    animation: rotateIcon 3s linear infinite;
 }

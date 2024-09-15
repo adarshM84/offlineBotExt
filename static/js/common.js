@@ -10,7 +10,7 @@ function typeWriter() {
 function convertBackticksToCodeBlock(text) {
     // Replace triple backticks with HTML <pre><code> tags
     return text
-        .replace(/```([\s\S]*?)```/g, '<code class="align-middle">$1</code>'); // Handles multiline code blocks
+        .replace(/```sql([\s\S]*?)```/g, '<code class="align-middle">$1</code>'); // Handles multiline code blocks
 }
 
 
