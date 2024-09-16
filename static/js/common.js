@@ -120,3 +120,7 @@ function copyData(value) {
 function openModal(modalBtnId){
     document.getElementById(modalBtnId).click();
 }
+
+function getModalList(){
+    alert("Called")
+}

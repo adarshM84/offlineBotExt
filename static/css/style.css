@@ -267,3 +267,6 @@ body {
 .bi-gear-wide-connected{
     animation: rotateIcon 3s linear infinite;
 }
+.modal-body{
+    min-height: 75vh !important;
+}
