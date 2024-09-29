@@ -21,7 +21,7 @@ function checkTime(i) {
     return i;
 }
 
-function addMessage(userQ, botAn, msgType,ansDivNo=parseInt(localStorage.getItem("qId"))) {
+function addMessage(userQ, botAn, msgType, ansDivNo = parseInt(localStorage.getItem("qId"))) {
     if (msgType == "question") {
         localStorage.setItem("qId", parseInt(localStorage.getItem("qId")) + 1)
         var chatRow = document.createElement("div");
@@ -38,7 +38,9 @@ function addMessage(userQ, botAn, msgType,ansDivNo=parseInt(localStorage.getItem
 
         var botAnEl = document.createElement("p");
         botAnEl.id = "botResponse" + parseInt(localStorage.getItem("qId"));
-        botAnEl.innerHTML = '<span class="mt-1 coustomSpinner">Loading</span> <span class="spinner-grow spinner-grow-sm mt-2" role="status" aria-hidden="true"></span><span class="spinner-grow spinner-grow-sm mt-2" role="status" aria-hidden="true"></span><span class="spinner-grow spinner-grow-sm mt-2" role="status" aria-hidden="true"></span>';
+        botAnEl.setAttribute("style","width:100% !important;")
+        // botAnEl.innerHTML = '<span class="mt-1 coustomSpinner">Loading</span> <span class="spinner-grow spinner-grow-sm mt-2" role="status" aria-hidden="true"></span><span class="spinner-grow spinner-grow-sm mt-2" role="status" aria-hidden="true"></span><span class="spinner-grow spinner-grow-sm mt-2" role="status" aria-hidden="true"></span>';
+        botAnEl.innerHTML = '<p class="card-text placeholder-glow coustomSpinner"> <span class="placeholder col-7"></span> <span class="placeholder col-4"></span> <span class="placeholder col-4"></span> <span class="placeholder col-6"></span> <span class="placeholder col-8"></span> </p> </div> ';
         botAnDiv.appendChild(botAnEl);
 
         var divSvgList = document.createElement("div");
@@ -54,9 +56,9 @@ function addMessage(userQ, botAn, msgType,ansDivNo=parseInt(localStorage.getItem
         return parseInt(localStorage.getItem("qId"));
     } else if (msgType == "answer") {
         // document.getElementById("botResponse" + ansDivNo).innerHTML = "";
-        if(document.getElementById("botResponse" + ansDivNo).innerHTML.search("coustomSpinner")!=-1){
+        if (document.getElementById("botResponse" + ansDivNo).innerHTML.search("coustomSpinner") != -1) {
             document.getElementById("botResponse" + ansDivNo).innerHTML = "";
-            botMessage="";
+            botMessage = "";
         }
         botMessage += botAn;
         document.getElementById("botResponse" + ansDivNo).setAttribute("style", "white-space: pre-line;");
@@ -117,10 +119,63 @@ function copyData(value) {
     navigator.clipboard.writeText(value)
 }
 
-function openModal(modalBtnId){
+function openModal(modalBtnId) {
     document.getElementById(modalBtnId).click();
 }
 
-function getModalList(){
-    alert("Called")
+function setMessage(elemId,msg,isError){
+    document.getElementById(elemId).innerHTML=msg;
+    var messageCss=isError ? "color:red;":"color:green;";
+    document.getElementById(elemId).setAttribute("style",messageCss);
+}
+
+function setModalList() {
+    if(!localStorage.getItem("ollamaPort") || localStorage.getItem("ollamaPort")=="null" || localStorage.getItem("ollamaPort").length==0){
+        localStorage.setItem("ollamaPort","11434");
+    }
+
+    var hostAddress = localStorage.getItem("hostAddress");
+    var ollamaPort = localStorage.getItem("ollamaPort");
+    var useEmoji=localStorage.getItem("useEmoji") =="true" ? true:false;
+
+    document.getElementById("useEmogi").checked=useEmoji;
+    document.getElementById("ollamaPort").value=ollamaPort;
+    // localStorage.setItem("ollamaPort", "123")
+
+    const apiUrl = `http://${localStorage.getItem("hostAddress")}:${localStorage.getItem("ollamaPort")}/api/tags`;
+
+    fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then((response) => response.json())
+        .then((data) => {
+            var modelsList = data.models;
+            var modelSelect=document.getElementById("modalList");
+            modelSelect.innerHTML="<option disabled selected>Select Modal</option>";
+            for (i = 0; i < modelsList.length; i++) {
+                // console.log(modelsList[i])
+                var tmpOption=document.createElement("option");
+                tmpOption.value=modelsList[i].name;
+                tmpOption.innerHTML=modelsList[i].name +" "+modelsList[i].details.parameter_size;
+                
+                var selectedModal=localStorage.getItem("ollamaModal");
+                if(!selectedModal || selectedModal=="null" || selectedModal.length==0){
+                    tmpOption.selected=true;
+                }
+                if(selectedModal==modelsList[i].name){
+                    tmpOption.selected=true;
+                }
+
+                modelSelect.appendChild(tmpOption)
+            }
+            setMessage("settingsMessage","Modal loaded successfully",0)
+        })
+        .catch((error => {
+            setMessage("settingsMessage","Unable to connect to ollama.Please check server running or not through below url.By default it will server on 11434<br><a target='_blank' href='http://localhost:11434/api/tags'>http://localhost:11434/api/tags<a> <br><br> To install make setuo of ollama server click <a href='https://github.com/ollama/ollama/tree/main#user-content-ollama'>here</a>",1);
+
+            console.error('There was a problem with the fetch operation:', error);
+        }));
+
 }

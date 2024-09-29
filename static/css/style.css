@@ -11,6 +11,9 @@
     -webkit-backdrop-filter: blur(9.5px);
     border: 1px solid rgb(0 0 0 / 40%);
 }
+textarea{
+    scrollbar-width: none !important;
+}
 
 .card {
     cursor: pointer !important;
@@ -269,4 +272,7 @@ body {
 }
 .modal-body{
     min-height: 75vh !important;
+}
+.form-control,.form-select{
+    background: #ffffff7a !important;
 }

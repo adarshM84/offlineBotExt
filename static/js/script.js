@@ -1,65 +1,112 @@
 // Set Function
 
-localStorage.setItem("botDesc", null)
-var hostUrl="http://localhost:11434";
-localStorage.setItem("hostAddress", hostUrl);
+var rebuildRules = undefined;
+if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id) {
+    rebuildRules = async function (domain) {
+        const domains = [domain];
+        /** @type {chrome.declarativeNetRequest.Rule[]} */
+        const rules = [{
+            id: 1,
+            condition: {
+                requestDomains: domains
+            },
+            action: {
+                type: 'modifyHeaders',
+                requestHeaders: [{
+                    header: 'origin',
+                    operation: 'set',
+                    value: `http://${domain}`,
+                }],
+            },
+        }];
+        await chrome.declarativeNetRequest.updateDynamicRules({
+            removeRuleIds: rules.map(r => r.id),
+            addRules: rules,
+        });
+    }
+}
 
-document.getElementById("userInput").addEventListener("keydown", function(event) {
-    callByEnter(event, 'getQAnswer');
+
+function setHostAddress() {
+    if (rebuildRules) {
+        rebuildRules("localhost");
+    }
+}
+
+const textarea = document.getElementById('userInput');
+    
+textarea.addEventListener('input', function () {
+  this.style.height = 'auto';  // Reset height
+  this.style.height = (this.scrollHeight <= 60 ? this.scrollHeight : 60) + 'px'; // Set height based on content or max-height
 });
 
-document.getElementById("openSettingIcon").addEventListener("click", function(event) {
-    openModal('openSettingModalBtn');
-});
-document.getElementById("setCustomBotRole").addEventListener("click", function(event) {
-    setRole(event,true,"coustomInput")
-});
-document.getElementById("send-button").addEventListener("click", function(event) {
-    getQAnswer();
-});
+window.onload = () => {
+    localStorage.setItem("hostAddress", "localhost");
+    if (localStorage.getItem("ollamaPort") == null || localStorage.getItem("ollamaPort").length == 0) localStorage.setItem("ollamaPort", "11434");
+    localStorage.setItem("botDesc", null);
 
-document.getElementById("opneIntroIcon").addEventListener("click", function(event) {
-    openModal('openModalBtn')
-});
+    setHostAddress();
 
-let roleList=document.getElementsByClassName("setBotRole");
-for(i=0;i<roleList.length;i++){
-    roleList[i].addEventListener("click",function(event){
-        setRole(event)
+    // document.getElementById("userInput").addEventListener("keydown", function (event) {
+    //     callByEnter(event, 'getQAnswer');
+    // });
+
+    document.getElementById("openSettingIcon").addEventListener("click", function (event) {
+        openModal('openSettingModalBtn');
+        setModalList();
     });
+    document.getElementById("setCustomBotRole").addEventListener("click", function (event) {
+        setRole(event, true, "coustomInput")
+    });
+    document.getElementById("send-button").addEventListener("click", function (event) {
+        getQAnswer();
+    });
+
+    document.getElementById("opneIntroIcon").addEventListener("click", function (event) {
+        openModal('openModalBtn')
+    });
+    document.getElementById("botImage").addEventListener("click", function (event) {
+        openModal('openModalBtn')
+    });
+
+    var roleList = document.getElementsByClassName("setBotRole");
+    for (i = 0; i < roleList.length; i++) {
+        roleList[i].addEventListener("click", function (event) {
+            setRole(event)
+        });
+    }
+
+    var settingsList = document.getElementsByClassName("ollamaSettings");
+    for (i = 0; i < settingsList.length; i++) {
+        settingsList[i].addEventListener("change", function (event) {
+            setSettings(event)
+        });
+    }
 }
 
 // Set Function End
 
-var rebuildRules = undefined;
-if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id) {
-    rebuildRules = async function (domain) {
-        alert(domain)
-    const domains = [domain];
-    /** @type {chrome.declarativeNetRequest.Rule[]} */
-    const rules = [{
-      id: 1,
-      condition: {
-        requestDomains: domains
-      },
-      action: {
-        type: 'modifyHeaders',
-        requestHeaders: [{
-          header: 'origin',
-          operation: 'set',
-          value: `http://${domain}`,
-        }],
-      },
-    }];
-    await chrome.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: rules.map(r => r.id),
-      addRules: rules,
-    });
-  }
-}
-
 function scrollDown(divId) {
     document.getElementById(divId).scrollBy(0, document.getElementById(divId).scrollHeight);
+}
+
+function setSettings(event){
+    if(event.target.type=="checkbox"){
+        localStorage.setItem("useEmoji",event.target.checked);
+    }else if(event.target.type=="text"){
+        localStorage.setItem("ollamaPort",event.target.value);
+        if(event.target.value.trim().length == 0){
+            alert("Please enter valid port");
+            return;
+        }
+    }else if(event.target.type=="select-one"){
+        if(event.target.value.trim().length == 0){
+            alert("Please select modal");
+            return;
+        }
+        localStorage.setItem("ollamaModal",event.target.value)
+    }
+    setModalList();
 }
 
 //Bot response
@@ -74,82 +121,123 @@ function getQAnswer(isRoleSet) {
     }
     const lastDivid = addMessage(userQuery, "", "question");
 
-    if(isRoleSet){
-        if (localStorage.getItem("botDesc") != "null" && localStorage.getItem("botDesc").length>0) {
-            userQuery=localStorage.getItem("botDesc");
+    if (isRoleSet) {
+        if (localStorage.getItem("botDesc") != null && localStorage.getItem("botDesc").length > 0) {
+            userQuery = localStorage.getItem("botDesc");
             addMessage("", "Sure ;) .Please ask question.", "answer", lastDivid);
             document.getElementById('userInput').value = '';
+            addWelcomeMessage(false);
             return;
         }
     }
 
-    if (localStorage.getItem("botDesc") != "null" && localStorage.getItem("botDesc").length>0) {
-        userQuery=localStorage.getItem("botDesc")+" User Response : "+userQuery;
+    if (localStorage.getItem("botDesc") != null && localStorage.getItem("botDesc").length > 0) {
+        userQuery = localStorage.getItem("botDesc") + " User Response : " + userQuery;
     }
 
+    scrollDown("chat");
+    
+    var ollamaModal=localStorage.getItem("ollamaModal") ? localStorage.getItem("ollamaModal") :"llama3";
     const data = {
-        model: 'llama3',
+        model: ollamaModal,
         prompt: userQuery,
         stream: true
     };
-    
-    const apiUrl = hostUrl+"/api/generate";
-    console.log(apiUrl)
+
+    const apiUrl = `http://${localStorage.getItem("hostAddress")}:${localStorage.getItem("ollamaPort")}/api/generate`;
     fetch(apiUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    }).then(response => {
-            const reader = response.body.getReader();
+    })
+        .then(response => {
+            // console.log(response, "response");
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.body.getReader();
+        }).then(reader => {
+            let decoder = new TextDecoder();
+            let buffer = ''; // Buffer to store incomplete JSON strings
 
-            return new ReadableStream({
-                start(controller) {
-                    function readStream() {
-                        reader.read().then(({ done, value }) => {
-                            if (done) {
-                                controller.close();
-                                return;
-                            }
-                            const chunkText = new TextDecoder().decode(value);
-                            addMessage("", chunkText, "answer", lastDivid);
-
-                            controller.enqueue(value);
-                            readStream();
-                        }).catch(error => {
-                            console.error('Error reading data:', error);
-                            controller.error(error);
-                        });
+            // Define recursive function to continuously fetch responses
+            function readStream() {
+                reader.read().then(({ done, value }) => {
+                    if (done) {
+                        // Process any remaining buffer at the end of stream
+                        if (buffer !== '') {
+                            processJSON(buffer);
+                        }
+                        return;
                     }
-                    readStream();
+
+                    // Append the new chunk of data to the buffer
+                    buffer += decoder.decode(value, { stream: true });
+
+                    // Process complete JSON objects in the buffer
+                    processBuffer();
+                });
+            }
+
+            // Function to process the buffer and extract complete JSON objects
+            function processBuffer() {
+                let chunks = buffer.split('\n');
+                buffer = '';
+
+                // Process each chunk
+                for (let i = 0; i < chunks.length - 1; i++) {
+                    let chunk = chunks[i];
+                    processJSON(chunk);
                 }
-            });
-        })
-        .then(stream => new Response(stream))
-        .then(response => response.text())
-        .then(data => {
-            // addMessage("",data,"answer");
-            addWelcomeMessage(false);
+
+                // Store the incomplete JSON for the next iteration
+                buffer = chunks[chunks.length - 1];
+            }
+
+            // Function to parse and process a JSON object
+            function processJSON(jsonString) {
+                try {
+                    let jsonData = JSON.parse(jsonString);
+                    jsonData.response = jsonData.response.replace(/"/g, '');
+
+                    addMessage("", jsonData.response, "answer", lastDivid);
+
+                    // Check if the response indicates "done: true"
+                    if (jsonData.done) {
+                        addWelcomeMessage(false);
+                    } else {
+                        // Continue reading the stream
+                        readStream();
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                }
+            }
+
+            // Start reading the stream
+            readStream();
         })
         .catch(error => {
-            console.error('Error fetching data:', error);
+            console.error('There was a problem with the fetch operation:', error);
+            alert('Error:', error); // Display error if any
         });
 
     // Clear the input field
     document.getElementById('userInput').value = '';
 };
 
-function setRole(event,isCoustom=false,inputId="") {
-    var botRole="";
-    if(isCoustom){
-        botRole=document.getElementById(inputId).value.trim();
-        if(botRole.length==0){
+function setRole(event, isCoustom = false, inputId = "") {
+    var botRole = "";
+    if (isCoustom) {
+        botRole = document.getElementById(inputId).value.trim();
+        if (botRole.length == 0) {
             alert("Enter valid role");
             return
         }
-    }else{
-        botRole=event.target.innerText;
+    } else {
+        botRole = event.target.innerText;
     }
     localStorage.setItem("botDesc", botRole);
     document.getElementById('userInput').value = botRole;
