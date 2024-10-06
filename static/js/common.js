@@ -3,7 +3,9 @@ var botMessage = "";
 var speed = 10;
 
 function typeWriter() {
-    document.getElementById("botResponse" + parseInt(localStorage.getItem("qId"))).innerHTML = convertBackticksToCodeBlock(botMessage);
+    document.getElementById("botResponse" + parseInt(localStorage.getItem("qId"))).textContent = convertBackticksToCodeBlock(botMessage);
+    // document.getElementById("botResponse" + parseInt(localStorage.getItem("qId"))).innerHTML = convertBackticksToCodeBlock(botMessage);
+
     scrollDown("chat");
 }
 
@@ -12,7 +14,6 @@ function convertBackticksToCodeBlock(text) {
     return text
         .replace(/```sql([\s\S]*?)```/g, '<code class="align-middle">$1</code>'); // Handles multiline code blocks
 }
-
 
 function checkTime(i) {
     if (i < 10) {
@@ -27,10 +28,11 @@ function addMessage(userQ, botAn, msgType, ansDivNo = parseInt(localStorage.getI
         var chatRow = document.createElement("div");
         chatRow.className = "chatRow my-3";
         chatRow.id = "chatRow" + parseInt(localStorage.getItem("qId"));
+        chatRow.setAttribute("style", "white-space: pre-line;");
 
         var userQDiv = document.createElement("div");
         userQDiv.className = "userQuery d-flex justify-content-start";
-        userQDiv.innerHTML = userQ;
+        userQDiv.textContent = userQ;//Set Question
 
         var botAnDiv = document.createElement("div");
         botAnDiv.className = "botResponse d-flex justify-content-start";
@@ -45,12 +47,13 @@ function addMessage(userQ, botAn, msgType, ansDivNo = parseInt(localStorage.getI
 
         var divSvgList = document.createElement("div");
         divSvgList.className = "responseSvg"
-        divSvgList.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-clipboard2-fill reactSvg" viewBox="0 0 16 16" onclick="copyResponse(' + parseInt(localStorage.getItem("qId")) + ')" id="copy' + parseInt(localStorage.getItem("qId")) + '"><path d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5z"/><path d="M3.5 1h.585A1.5 1.5 0 0 0 4 1.5V2a1.5 1.5 0 0 0 1.5 1.5h5A1.5 1.5 0 0 0 12 2v-.5q-.001-.264-.085-.5h.585A1.5 1.5 0 0 1 14 2.5v12a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-12A1.5 1.5 0 0 1 3.5 1"/><title>Copy Response</title>    </svg>                                                                                  <svg id="copied' + parseInt(localStorage.getItem("qId")) + '" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-clipboard-check-fill reactSvg" viewBox="0 0 16 16" style="display:none"><path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708"/><title>Copied</title></svg> '
-
+        divSvgList.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-clipboard2-fill reactSvg copyResponse" viewBox="0 0 16 16"  id="copy' + parseInt(localStorage.getItem("qId")) + '"><path id="'+ parseInt(localStorage.getItem("qId"))+'" d="M9.5 0a.5.5 0 0 1 .5.5.5.5 0 0 0 .5.5.5.5 0 0 1 .5.5V2a.5.5 0 0 1-.5.5h-5A.5.5 0 0 1 5 2v-.5a.5.5 0 0 1 .5-.5.5.5 0 0 0 .5-.5.5.5 0 0 1 .5-.5z"/><path id="'+ parseInt(localStorage.getItem("qId"))+'" d="M3.5 1h.585A1.5 1.5 0 0 0 4 1.5V2a1.5 1.5 0 0 0 1.5 1.5h5A1.5 1.5 0 0 0 12 2v-.5q-.001-.264-.085-.5h.585A1.5 1.5 0 0 1 14 2.5v12a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 14.5v-12A1.5 1.5 0 0 1 3.5 1"/><title>Copy Response</title>    </svg>                                                                                  <svg id="copied' + parseInt(localStorage.getItem("qId")) + '" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-clipboard-check-fill reactSvg" viewBox="0 0 16 16" style="display:none"><path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5z"/><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708"/><title>Copied</title></svg> '
 
         chatRow.appendChild(userQDiv);
         chatRow.appendChild(botAnDiv);
         chatRow.appendChild(divSvgList);
+        divSvgList.addEventListener("click",function(event){copyResponse(event.target.id)})
+
 
         document.getElementById("chat").appendChild(chatRow);
         return parseInt(localStorage.getItem("qId"));
@@ -68,6 +71,8 @@ function addMessage(userQ, botAn, msgType, ansDivNo = parseInt(localStorage.getI
 }
 
 function copyResponse(divId, copied = false) {
+    if(divId.includes("copy")) divId=divId.substr(0,4);//To handle copy id of svg
+    
     if (navigator.clipboard) {
         if (!copied) {
             window.navigator.clipboard.writeText(document.getElementById("chatRow" + divId).getElementsByTagName("div")[1].textContent);

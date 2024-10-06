@@ -55,6 +55,7 @@ window.onload = () => {
         openModal('openSettingModalBtn');
         setModalList();
     });
+    
     document.getElementById("setCustomBotRole").addEventListener("click", function (event) {
         setRole(event, true, "coustomInput")
     });
@@ -120,23 +121,29 @@ function getQAnswer(isRoleSet) {
         return
     }
     const lastDivid = addMessage(userQuery, "", "question");
+    var useEmoji="";
 
     if (isRoleSet) {
-        if (localStorage.getItem("botDesc") != null && localStorage.getItem("botDesc").length > 0) {
-            userQuery = localStorage.getItem("botDesc");
+        if (localStorage.getItem("botDesc") != "null" && localStorage.getItem("botDesc").length > 0) {
             addMessage("", "Sure ;) .Please ask question.", "answer", lastDivid);
             document.getElementById('userInput').value = '';
             addWelcomeMessage(false);
             return;
         }
     }
-
-    if (localStorage.getItem("botDesc") != null && localStorage.getItem("botDesc").length > 0) {
-        userQuery = localStorage.getItem("botDesc") + " User Response : " + userQuery;
+    if (localStorage.getItem("useEmoji") != null && localStorage.getItem("useEmoji").length > 0) {
+        if(localStorage.getItem("useEmoji") =="true") useEmoji = "Use Emoji In Response ";
+    }
+    if (localStorage.getItem("botDesc") != "null" && localStorage.getItem("botDesc").length > 0) {
+        userQuery = (useEmoji.length >0 ? useEmoji +localStorage.getItem("botDesc") : localStorage.getItem("botDesc") )+ " User Question : " + userQuery;
+    }else{
+        userQuery = useEmoji.length >0 ? useEmoji +" User Question : " + userQuery : " User Question : " + userQuery;
     }
 
+    console.log(userQuery)
+
     scrollDown("chat");
-    
+
     var ollamaModal=localStorage.getItem("ollamaModal") ? localStorage.getItem("ollamaModal") :"llama3";
     const data = {
         model: ollamaModal,
@@ -201,7 +208,7 @@ function getQAnswer(isRoleSet) {
                 try {
                     let jsonData = JSON.parse(jsonString);
                     jsonData.response = jsonData.response.replace(/"/g, '');
-
+                    console.log(jsonData.response)
                     addMessage("", jsonData.response, "answer", lastDivid);
 
                     // Check if the response indicates "done: true"
