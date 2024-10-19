@@ -1,4 +1,13 @@
 // Set Function
+const textarea = document.getElementById('userInput');
+
+textarea.addEventListener('input', function () {
+    this.style.height = 'auto';  // Reset height
+    this.style.height = (this.scrollHeight <= 60 ? this.scrollHeight : 60) + 'px'; // Set height based on content or max-height
+});
+
+var downloadModalList = [{ name: "llama3.2:latest", size: "2.0GB", downloaded: false }, { name: "llama3.1:latest", size: "4.7GB", downloaded: false }, { name: "llama3:latest", size: "4.7GB", downloaded: false }, { name: "llama2:latest", size: "3.8GB", downloaded: false }, { name: "phi3:latest", size: "2.2GB", downloaded: false }];
+
 
 var rebuildRules = undefined;
 if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id) {
@@ -26,6 +35,18 @@ if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.id) {
     }
 }
 
+window.onload = () => {
+    localStorage.setItem("hostAddress", "localhost");
+    if (localStorage.getItem("ollamaPort") == null || localStorage.getItem("ollamaPort").length == 0) localStorage.setItem("ollamaPort", "11434");
+    localStorage.setItem("botDesc", null);
+    setHostAddress();//To Do a post call for chat with ollama modals
+    setModalSettingsList();
+    setButtonFunctionCalls();//To Set Function Call On Buttons 
+
+}
+// Set Function End
+
+
 
 function setHostAddress() {
     if (rebuildRules) {
@@ -33,29 +54,8 @@ function setHostAddress() {
     }
 }
 
-const textarea = document.getElementById('userInput');
-    
-textarea.addEventListener('input', function () {
-  this.style.height = 'auto';  // Reset height
-  this.style.height = (this.scrollHeight <= 60 ? this.scrollHeight : 60) + 'px'; // Set height based on content or max-height
-});
+function setButtonFunctionCalls(){
 
-window.onload = () => {
-    localStorage.setItem("hostAddress", "localhost");
-    if (localStorage.getItem("ollamaPort") == null || localStorage.getItem("ollamaPort").length == 0) localStorage.setItem("ollamaPort", "11434");
-    localStorage.setItem("botDesc", null);
-
-    setHostAddress();
-
-    // document.getElementById("userInput").addEventListener("keydown", function (event) {
-    //     callByEnter(event, 'getQAnswer');
-    // });
-
-    document.getElementById("openSettingIcon").addEventListener("click", function (event) {
-        openModal('openSettingModalBtn');
-        setModalList();
-    });
-    
     document.getElementById("setCustomBotRole").addEventListener("click", function (event) {
         setRole(event, true, "coustomInput")
     });
@@ -69,45 +69,54 @@ window.onload = () => {
     document.getElementById("botImage").addEventListener("click", function (event) {
         openModal('openModalBtn')
     });
+    
+    setFunctionCallByClass("oppenSettingsModal","click",openModal,"openSettingModalBtn");
+    setFunctionCallByClass("setBotRole","click",setRole);
+    setFunctionCallByClass("ollamaSettings","change",setSettings);
 
-    var roleList = document.getElementsByClassName("setBotRole");
-    for (i = 0; i < roleList.length; i++) {
-        roleList[i].addEventListener("click", function (event) {
-            setRole(event)
-        });
-    }
-
-    var settingsList = document.getElementsByClassName("ollamaSettings");
-    for (i = 0; i < settingsList.length; i++) {
-        settingsList[i].addEventListener("change", function (event) {
-            setSettings(event)
+    var openSettingDiv = document.getElementsByClassName("openSettingDiv");
+    for (i = 0; i < openSettingDiv.length; i++) {
+        openSettingDiv[i].addEventListener("click", function (event) {
+            for (i = 0; i < document.getElementsByClassName("settingsContDiv").length; i++) {
+                document.getElementsByClassName("settingsContDiv")[i].hidden = true;
+            }
+            document.getElementById(event.target.name).hidden = !document.getElementById(event.target.name).hidden;
         });
     }
 }
 
-// Set Function End
+//This will set the function call by class name
+function setFunctionCallByClass(elementClassName,actionType,func,funcElementId=false){
+    var tmpClassElementList = document.getElementsByClassName(elementClassName);
+    for (i = 0; i < tmpClassElementList.length; i++) {
+        tmpClassElementList[i].addEventListener(actionType, function (event) {
+            if(funcElementId) func(funcElementId)
+            else func(event)
+        });
+    }
+}
 
 function scrollDown(divId) {
     document.getElementById(divId).scrollBy(0, document.getElementById(divId).scrollHeight);
 }
 
-function setSettings(event){
-    if(event.target.type=="checkbox"){
-        localStorage.setItem("useEmoji",event.target.checked);
-    }else if(event.target.type=="text"){
-        localStorage.setItem("ollamaPort",event.target.value);
-        if(event.target.value.trim().length == 0){
+function setSettings(event) {
+    if (event.target.type == "checkbox") {
+        localStorage.setItem("useEmoji", event.target.checked);
+    } else if (event.target.type == "text") {
+        localStorage.setItem("ollamaPort", event.target.value);
+        if (event.target.value.trim().length == 0) {
             alert("Please enter valid port");
             return;
         }
-    }else if(event.target.type=="select-one"){
-        if(event.target.value.trim().length == 0){
+    } else if (event.target.type == "select-one") {
+        if (event.target.value.trim().length == 0) {
             alert("Please select modal");
             return;
         }
-        localStorage.setItem("ollamaModal",event.target.value)
+        localStorage.setItem("ollamaModal", event.target.value)
     }
-    setModalList();
+    setModalSettingsList();
 }
 
 //Bot response
@@ -121,30 +130,30 @@ function getQAnswer(isRoleSet) {
         return
     }
     const lastDivid = addMessage(userQuery, "", "question");
-    var useEmoji="";
+    var useEmoji = "";
 
     if (isRoleSet) {
         if (localStorage.getItem("botDesc") != "null" && localStorage.getItem("botDesc").length > 0) {
             addMessage("", "Sure ;) .Please ask question.", "answer", lastDivid);
             document.getElementById('userInput').value = '';
-            addWelcomeMessage(false);
+            showElement("welcomeDiv",false);
             return;
         }
     }
     if (localStorage.getItem("useEmoji") != null && localStorage.getItem("useEmoji").length > 0) {
-        if(localStorage.getItem("useEmoji") =="true") useEmoji = "Use Emoji In Response ";
+        if (localStorage.getItem("useEmoji") == "true") useEmoji = "Use Emoji In Response ";
     }
     if (localStorage.getItem("botDesc") != "null" && localStorage.getItem("botDesc").length > 0) {
-        userQuery = (useEmoji.length >0 ? useEmoji +localStorage.getItem("botDesc") : localStorage.getItem("botDesc") )+ " User Question : " + userQuery;
-    }else{
-        userQuery = useEmoji.length >0 ? useEmoji +" User Question : " + userQuery : " User Question : " + userQuery;
+        userQuery = (useEmoji.length > 0 ? useEmoji + localStorage.getItem("botDesc") : localStorage.getItem("botDesc")) + " User Ask : " + userQuery;
+    } else {
+        userQuery = useEmoji.length > 0 ? useEmoji + " User Ask : " + userQuery : " User Ask : " + userQuery;
     }
 
     console.log(userQuery)
 
     scrollDown("chat");
 
-    var ollamaModal=localStorage.getItem("ollamaModal") ? localStorage.getItem("ollamaModal") :"llama3";
+    var ollamaModal = localStorage.getItem("ollamaModal") ? localStorage.getItem("ollamaModal") : "llama3";
     const data = {
         model: ollamaModal,
         prompt: userQuery,
@@ -213,7 +222,7 @@ function getQAnswer(isRoleSet) {
 
                     // Check if the response indicates "done: true"
                     if (jsonData.done) {
-                        addWelcomeMessage(false);
+                        showElement("welcomeDiv",false);
                     } else {
                         // Continue reading the stream
                         readStream();

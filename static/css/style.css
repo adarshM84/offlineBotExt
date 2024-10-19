@@ -1,4 +1,10 @@
-#chat {
+body {
+    background: #E3F2FD !important;
+    /* background: black !important;
+    color: white !important; */
+}
+
+.chatDiv {
     height: 70vh !important;
     overflow-y: auto !important;
     padding: 15px;
@@ -11,7 +17,12 @@
     -webkit-backdrop-filter: blur(9.5px);
     border: 1px solid rgb(0 0 0 / 40%);
 }
-textarea{
+
+textarea {
+    scrollbar-width: none !important;
+}
+
+#openSettingModal {
     scrollbar-width: none !important;
 }
 
@@ -122,13 +133,6 @@ code {
 
 }
 
-body {
-    background: #E3F2FD !important;
-}
-
-/* body{
-    background-color: black !important;
-} */
 
 .codeHead {
     white-space: pre-line !important;
@@ -161,6 +165,76 @@ body {
     cursor: pointer;
 }
 
+.customIcon {
+    height: 30px !important;
+    margin: 0px 3px 0px 0px !important;
+    cursor: pointer !important;
+}
+
+.customBtn {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.customBtn-primary {
+    background: #bae4ba !important;
+}
+.customBtn-danger {
+    background: rgb(255, 174, 174) !important;
+}
+
+.customBtn:focus {
+    outline: 3px solid rgba(253, 99, 47, 0.5);
+    outline-offset: 2px;
+}
+
+.button--neumorphic {
+    color: black;
+    box-shadow: 5px 5px 10px #b0c4de, -5px -5px 10px #ffffff;
+}
+
+.button--neumorphic:hover {
+    box-shadow: inset 5px 5px 10px #b0c4de, inset -5px -5px 10px #ffffff;
+}
+.w-10{
+    width: 10% !important;
+}
+
+/* For Error Show */
+.customCard{
+    rotate: 2deg;
+    box-shadow: 10px 11px 11px;
+}
+.customCard:hover{
+    rotate: 0deg;
+    color: white;
+    box-shadow: 10px 11px 11px solid black;
+}
+.card img{
+    height: 100% !important;
+    opacity: 0.9 !important;
+}
+a{
+    text-decoration: none !important;
+}
+.card-img-overlay:hover {
+    background: #ff6b6b;
+}
+
+.card-img-overlay {
+    background: #ffe5e5;
+    opacity: 0.7;
+}
+
+/* For Error Show End */
+
+
+
 
 /* ================ */
 
@@ -188,23 +262,23 @@ body {
 
 @keyframes rotateIcon {
     10% {
-        rotate:30deg;
+        rotate: 30deg;
     }
 
     25% {
-        rotate:40deg;
+        rotate: 40deg;
     }
 
     50% {
-        rotate:60deg;
+        rotate: 60deg;
     }
 
     75% {
-        rotate:40deg;
+        rotate: 40deg;
     }
 
     100% {
-        rotate:30deg;
+        rotate: 30deg;
     }
 }
 
@@ -249,7 +323,7 @@ body {
     background: #4169e1 !important;
 }
 
-#exampleModal {
+#ownerModal {
     background: #00000085 !important;
     scrollbar-width: none !important;
 }
@@ -267,12 +341,41 @@ body {
     box-sizing: border-box;
     /* Ensure padding and border do not affect size */
 }
-.bi-gear-wide-connected{
+
+.bi-gear-wide-connected {
     animation: rotateIcon 3s linear infinite;
 }
-.modal-body{
-    min-height: 75vh !important;
+
+.backgroundLightWhite {
+    background: #f5f5f596 !important;
+    color: #333333 !important;
 }
-.form-control,.form-select{
+
+#settings-scroll {
+    width: 100% !important;
+    border-radius: 10px !important;
+}
+
+.modal-body {
+    min-height: 75vh !important;
+    max-height: 75vh !important;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.scrollDiv {
+    min-height: 63vh !important;
+}
+
+.nav-link {
+    color: #444040 !important;
+}
+
+.nav-link:hover {
+    color: black !important;
+}
+
+.form-control,
+.form-select {
     background: #ffffff7a !important;
 }
