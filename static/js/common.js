@@ -87,7 +87,7 @@ function copyResponse(divId, copied = false) {
 }
 
 
-function showElement(elementId,flag) {
+function showElement(elementId, flag) {
     document.getElementById(elementId).hidden = !flag;
     // if (flag) {
     //     document.getElementById(elementId).hidden = false
@@ -139,9 +139,11 @@ function loadModalTableData(modalInfo) {
     modalInfo.sort((a, b) => { return b.downloaded - a.downloaded; });
     var tableInstance = document.getElementById("modalTableBody");
     tableInstance.innerHTML = "";
+    var downloadedModalCount = 0;
 
     for (i = 0; i < modalInfo.length; i++) {
         var tmpTr = document.createElement("tr");
+        tmpTr.id = "downloadModalRow" + (i + 1)
 
         var tmpThSr = document.createElement("td");
         tmpThSr.innerHTML = (i + 1);
@@ -161,38 +163,48 @@ function loadModalTableData(modalInfo) {
 
         const downloadButton = document.createElement('button');
         downloadButton.type = 'button';
-        downloadButton.hidden = modalInfo[i].downloaded;
-        downloadButton.classList.add("customBtn", "customBtn-primary","mx-1", "button--neumorphic");
-
+        downloadButton.title = "Click here to download";
+        downloadButton.name = tmpTr.id;
+        downloadButton.classList.add("customBtn-sm", "customBtn-primary", "mx-1", "button--neumorphic");
         downloadButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cloud-arrow-down-fill" viewBox="0 0 16 16">
   <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 6.854-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 9.293V5.5a.5.5 0 0 1 1 0v3.793l1.146-1.147a.5.5 0 0 1 .708.708"/>
 </svg>`;
-//         const infoButton = document.createElement('button');
-//         infoButton.type = 'button';
-//         infoButton.classList.add('btn', 'btn-sm', 'mx-1', 'btn-outline-warning');
-//         infoButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-info-circle-fill" viewBox="0 0 16 16">
-//   <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/>
-// </svg>`
+        downloadButton.addEventListener("click", function (event) { downloadModalOnline(event.currentTarget.name) });
 
         const deleteButton = document.createElement('button');
         deleteButton.type = 'button';
-        deleteButton.hidden = !modalInfo[i].downloaded;
-        deleteButton.classList.add("customBtn", "customBtn-danger","mx-1", "button--neumorphic");
+        deleteButton.title = 'Click here to delete';
+        deleteButton.name = tmpTr.id;
+        if (downloadedModalCount == 0 && modalInfo[i] && modalInfo[i].downloaded) {
+            // deleteButton.disabled = true;
+            // deleteButton.title = "Not allowed to delete";
+            deleteButton.setAttribute("style", "cursor: not-allowed !important;")
+            downloadedModalCount++;
+        }
+        deleteButton.addEventListener("click", function (event) { deleteModalOnline(event.currentTarget.name) });
+        deleteButton.classList.add("customBtn-sm", "customBtn-danger", "mx-1", "button--neumorphic");
         deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash2-fill" viewBox="0 0 16 16">
   <path d="M2.037 3.225A.7.7 0 0 1 2 3c0-1.105 2.686-2 6-2s6 .895 6 2a.7.7 0 0 1-.037.225l-1.684 10.104A2 2 0 0 1 10.305 15H5.694a2 2 0 0 1-1.973-1.671zm9.89-.69C10.966 2.214 9.578 2 8 2c-1.58 0-2.968.215-3.926.534-.477.16-.795.327-.975.466.18.14.498.307.975.466C5.032 3.786 6.42 4 8 4s2.967-.215 3.926-.534c.477-.16.795-.327.975-.466-.18-.14-.498-.307-.975-.466z"/>
 </svg>`
 
-        // tmpThAction.appendChild(infoButton);
-        tmpThAction.appendChild(downloadButton);
-        tmpThAction.appendChild(deleteButton);
+        if (modalInfo[i] && modalInfo[i].downloaded) tmpThAction.appendChild(deleteButton);
+        else tmpThAction.appendChild(downloadButton);
 
         var tmpThDownload = document.createElement("td");
-        tmpThDownload.classList.add("backgroundLightWhite");
-        var tmpSpan = document.createElement("span")
-        tmpSpan.classList.add("badge","text-black");
-        tmpSpan.classList.add(modalInfo[i].downloaded ? ("customBtn-primary") : ("customBtn-danger"));
-        tmpSpan.innerHTML = modalInfo[i].downloaded ? "DOWNLOADED" : "PENDING";
-        tmpThDownload.appendChild(tmpSpan);
+        tmpThDownload.classList.add("backgroundLightWhite", "d-flex", "align-items-center");
+
+        var tmpSpanMessage = document.createElement("span");
+        tmpSpanMessage.classList.add("badge", "text-black");
+        tmpSpanMessage.classList.add(modalInfo[i].downloaded ? ("customBtn-primary") : ("customBtn-danger"));
+        tmpSpanMessage.id = "downloadStatus" + (i + 1)
+        tmpSpanMessage.innerHTML = modalInfo[i].downloaded ? "DOWNLOADED" : "PENDING";
+
+        var tmpSpanSpinner = document.createElement("span");
+        tmpSpanSpinner.classList.add("badge", "text-black");
+        tmpSpanSpinner.hidden = true;
+        tmpSpanSpinner.innerHTML = `<div class="spinner-border spinner-border-sm" role="status"><span class="visually-hidden">Loading...</span></div>`;
+        tmpThDownload.appendChild(tmpSpanSpinner);
+        tmpThDownload.appendChild(tmpSpanMessage);
 
         tmpTr.appendChild(tmpThSr);
         tmpTr.appendChild(tmpThName);
@@ -203,6 +215,181 @@ function loadModalTableData(modalInfo) {
         tableInstance.appendChild(tmpTr);
     }
 
+}
+
+//This will download the modal based on user request
+function downloadModalOnline(modalDownloadRowId) {
+    let tmpDownloadRow = document.getElementById(modalDownloadRowId);
+    let tmpDownloadStatus = tmpDownloadRow.getElementsByTagName("td")[4];
+
+    let tmpDownloadStatusSpan = tmpDownloadStatus.getElementsByTagName("span")[2];
+    tmpDownloadStatusSpan.classList.remove('customBtn-danger');
+    tmpDownloadStatusSpan.classList.add('customBtn-primary');
+
+    let modalName = tmpDownloadRow.getElementsByTagName("td")[1].textContent.trim();
+
+    if (!navigator.onLine) {
+        alert("Note : Internet are require to download the modal.Please check connection")
+        return 0;
+    }
+
+    tmpDownloadStatus.getElementsByTagName("span")[0].hidden = false;
+    tmpDownloadStatusSpan.innerHTML = `Download Started Please wait..`;
+
+    if (localStorage.getItem("ModalWorking") && localStorage.getItem("ModalWorking") == "1" && modalName && modalName.length > 0) {
+        console.log("start");
+        const data = {
+            name: modalName,
+            stream: true
+        };
+
+        const apiUrl = `http://${localStorage.getItem("hostAddress")}:${localStorage.getItem("ollamaPort")}/api/pull`;
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                // console.log(response, "response");
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.body.getReader();
+            })
+            .then(reader => {
+                let decoder = new TextDecoder();
+                let buffer = ''; // Buffer to store incomplete JSON strings
+
+                // Define recursive function to continuously fetch responses
+                function readStream() {
+                    // Check if we should stop reading
+                    if (localStorage.getItem("stopDownload") === "true") {
+                        console.log("Download stopped by user.");
+                        return; // Stop further execution if stopDownload is true
+                    }
+                    if (!navigator.onLine) {
+                        alert("Note : Internet are require to download the modal.Please check connection")
+                        return 0;
+                    }
+
+                    reader.read().then(({ done, value }) => {
+                        if (done) {
+                            // Process any remaining buffer at the end of stream
+                            if (buffer !== '') {
+                                processJSON(buffer);
+                            }
+                            return;
+                        }
+
+                        // Append the new chunk of data to the buffer
+                        buffer += decoder.decode(value, { stream: true });
+
+                        // Process complete JSON objects in the buffer
+                        processBuffer();
+
+                        // Continue reading the stream if not done
+                        readStream();
+                    });
+                }
+
+                // Function to process the buffer and extract complete JSON objects
+                function processBuffer() {
+                    let chunks = buffer.split('\n');
+                    buffer = '';
+
+                    // Process each chunk
+                    for (let i = 0; i < chunks.length - 1; i++) {
+                        let chunk = chunks[i];
+                        processJSON(chunk);
+                    }
+
+                    // Store the incomplete JSON for the next iteration
+                    buffer = chunks[chunks.length - 1];
+                }
+
+                // Function to parse and process a JSON object
+                function processJSON(jsonString) {
+                    try {
+                        let jsonData = JSON.parse(jsonString);
+                        console.log(jsonData);
+                        let downloadPercent = 0;
+                        if (jsonData.total && jsonData.completed) {
+                            downloadPercent = (jsonData.completed / jsonData.total) * 100;
+                        }
+
+                        tmpDownloadStatusSpan.innerHTML = `${downloadPercent.toFixed(2)}%`;
+
+                        // Check if the response indicates "done: true"
+                        if (jsonData.status && jsonData.status == "success") {
+                            setModalSettingsList();//Load Latest Data
+                            alert("Download Complete");
+                            
+                        }
+                    } catch (error) {
+                        console.error('Error parsing JSON:', error);
+                    }
+                }
+
+                // Start reading the stream
+                readStream();
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+                alert('Error:', error); // Display error if any
+            });
+
+    }
+}
+
+//This will delete modal
+function deleteModalOnline(modalDownloadRowId) {
+    let tmpDownloadRow = document.getElementById(modalDownloadRowId);
+    let tmpDownloadStatus = tmpDownloadRow.getElementsByTagName("td")[4];
+
+    let tmpDownloadStatusSpan = tmpDownloadStatus.getElementsByTagName("span")[2];
+    console.log(tmpDownloadStatus.getElementsByTagName("span")[2])
+    tmpDownloadStatusSpan.classList.remove('customBtn-primary');
+    tmpDownloadStatusSpan.classList.add('customBtn-danger');
+
+    let modalName = tmpDownloadRow.getElementsByTagName("td")[1].textContent.trim();
+
+    let isDelete = confirm(`Are you sure want to delete ${modalName} modal ? `);
+    if (!isDelete) return 0;
+
+    tmpDownloadStatus.getElementsByTagName("span")[0].hidden = false;
+    tmpDownloadStatusSpan.innerHTML = `Delete Started Please wait..`;
+
+    if (localStorage.getItem("ModalWorking") && localStorage.getItem("ModalWorking") == "1" && modalName && modalName.length > 0) {
+        console.log("start");
+        const data = {
+            name: modalName
+        };
+
+        const apiUrl = `http://${localStorage.getItem("hostAddress")}:${localStorage.getItem("ollamaPort")}/api/delete`;
+        fetch(apiUrl, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                console.log(response)
+                if(response.status=="200"){
+                    setModalSettingsList();//Load Latest Data
+                    alert("Download Complete");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+    }
 }
 
 function setDownloadModalList(presentModal) {
@@ -240,7 +427,7 @@ function setModalSettingsList() {
         .then((data) => {
             var modelsList = data.models;
             var modelSelect = document.getElementById("modalList");
-            modelSelect.innerHTML="";
+            modelSelect.innerHTML = "";
             modelSelect.innerHTML = "<option disabled selected>Select Modal</option>";
             for (i = 0; i < modelsList.length; i++) {
                 // console.log(modelsList[i])
@@ -263,17 +450,17 @@ function setModalSettingsList() {
             // console.log(data.models)
             if (data.models.length > 0) setDownloadModalList(data.models);
             localStorage.setItem("ModalWorking", 1);
-            showElement("modalErrorDiv",false);
-            showElement("chatContainer",true);
+            showElement("modalErrorDiv", false);
+            showElement("chatContainer", true);
         })
         .catch((error => {
             var modelSelect = document.getElementById("modalList");
-            modelSelect.innerHTML="";
+            modelSelect.innerHTML = "";
             setMessage("settingsMessage", "<img class='customIcon' src='static/images/cross.gif' />Unable to connect to ollama.Please check server running or not through below url.<br><a target='_blank' href='http://localhost:11434/api/tags'>http://localhost:11434/api/tags<a><br><span class='text-success'> To install or make of ollama server click <a href='https://github.com/ollama/ollama/tree/main#user-content-ollama'>here</a></span>", 1);
             setMessage("downloadMessage", "<img class='customIcon' src='static/images/cross.gif' />Not able to connect with modal.Please check in Modal Settings Section", 1);
             localStorage.setItem("ModalWorking", 0);
-            showElement("modalErrorDiv",true);
-            showElement("chatContainer",false);
+            showElement("modalErrorDiv", true);
+            showElement("chatContainer", false);
             console.error('There was a problem with the fetch operation:', error);
         }));
 

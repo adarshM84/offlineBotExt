@@ -181,6 +181,16 @@ code {
     transition: all 0.3s ease;
 }
 
+.customBtn-sm{
+    padding: 4px 12px !important;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
 .customBtn-primary {
     background: #bae4ba !important;
 }
